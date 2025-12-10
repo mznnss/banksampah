@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beranda - Bank Sampah Hijau</title>
-    <style>
-        /* ... (Salin semua CSS Anda di sini) ... */
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <nav>
@@ -15,7 +13,7 @@
             <span></span><span></span><span></span>
         </div>
         <ul class="nav-links">
-            <li><a href="index.html" style="font-weight:bold;">Beranda</a></li>
+            <li><a href="index.html" class="active">Beranda</a></li>
             <li><a href="layanan.html">Layanan</a></li>
             <li><a href="statistik.html">Statistik</a></li>
             <li><a href="harga.html">Harga</a></li>
@@ -26,10 +24,8 @@
     <section class="hero">
         <div class="hero-content">
             <h1>Sampahmu Bernilai!</h1>
-            <p>Tukar sampah Anda dengan uang tunai. Mari bersama menjaga lingkungan.</p>
-            <button class="cta-button" onclick="window.location.href='kontak.html'">
-                Mulai Sekarang
-            </button>
+            <p>Tukar sampah Anda dengan uang tunai. Mari bersama menjaga lingkungan dan meningkatkan ekonomi keluarga.</p>
+            <button class="cta-button" onclick="window.location.href='kontak.html'">Mulai Sekarang</button>
         </div>
     </section>
 
@@ -38,9 +34,7 @@
     </footer>
 
     <script>
-        function toggleMenu() {
-            document.querySelector('.nav-links').classList.toggle('active');
-        }
+        function toggleMenu() { document.querySelector('.nav-links').classList.toggle('active'); }
     </script>
 </body>
 </html>
