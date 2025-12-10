@@ -3,740 +3,366 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bank Sampah Hijau - Bersama Untuk Lingkungan Bersih</title>
+    <title>Bank Sampah Hijau - Smart System</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        /* --- CSS DASAR & RESET --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow-x: hidden; background: #f8f9fa; color: #333; }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow-x: hidden;
-            background: #f8f9fa;
-        }
+        /* --- LOGIKA HALAMAN (SPA) --- */
+        .page { display: none; padding-top: 80px; min-height: 100vh; animation: fadeIn 0.5s ease; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Navbar */
-        nav {
-            position: fixed;
-            width: 100%;
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-            padding: 1rem 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1000;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            animation: slideDown 0.8s ease;
-        }
+        /* --- NAVBAR --- */
+        nav { position: fixed; width: 100%; background: linear-gradient(135deg, #2ecc71, #27ae60); padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        .logo { font-size: 1.8rem; font-weight: bold; color: white; display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .logo::before { content: "♻️"; }
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .nav-links a { color: white; text-decoration: none; font-weight: 500; cursor: pointer; position: relative; }
+        .nav-links a::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -5px; left: 0; background: white; transition: width 0.3s; }
+        .nav-links a:hover::after { width: 100%; }
+        .menu-toggle { display: none; flex-direction: column; cursor: pointer; }
+        .menu-toggle span { width: 25px; height: 3px; background: white; margin: 3px 0; }
 
-        @keyframes slideDown {
-            from {
-                transform: translateY(-100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
+        /* --- HERO SECTION --- */
+        .hero { height: 100vh; background: linear-gradient(135deg, rgba(46, 204, 113, 0.9), rgba(39, 174, 96, 0.9)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%2327ae60" width="1200" height="600"/><circle fill="%232ecc71" opacity="0.1" cx="200" cy="100" r="150"/><circle fill="%232ecc71" opacity="0.1" cx="800" cy="400" r="200"/></svg>'); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; text-align: center; color: white; margin-top: -80px; }
+        .hero-content { max-width: 800px; padding: 2rem; }
+        .hero h1 { font-size: 3.5rem; margin-bottom: 1rem; }
+        .cta-button { padding: 1rem 3rem; font-size: 1.1rem; background: white; color: #27ae60; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; transition: 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .cta-button:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,0,0,0.3); }
 
-        .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        /* --- COMPONENTS (Cards, Titles) --- */
+        .section-title { text-align: center; font-size: 2.5rem; color: #27ae60; margin: 3rem 0; position: relative; }
+        .section-title::after { content: ''; width: 100px; height: 4px; background: #2ecc71; display: block; margin: 1rem auto; }
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; padding: 0 5% 5rem; }
+        
+        .card { background: white; padding: 2rem; border-radius: 20px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.05); transition: 0.3s; }
+        .card:hover { transform: translateY(-10px); }
+        .icon { font-size: 3rem; margin-bottom: 1rem; display: block; }
+        .price-tag { font-size: 1.5rem; color: #2ecc71; font-weight: bold; margin: 1rem 0; }
 
-        .logo::before {
-            content: "♻️";
-            animation: rotate 3s linear infinite;
-        }
+        /* --- WEIGHING PAGE STYLES (Khusus Halaman Timbang) --- */
+        .weighing-container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .weighing-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 2rem; }
+        
+        .weighing-panel { background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 5px 30px rgba(0,0,0,0.1); }
+        
+        .waste-selector { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .waste-btn { padding: 1rem; border: 2px solid #eee; border-radius: 15px; background: white; cursor: pointer; transition: 0.3s; text-align: center; }
+        .waste-btn:hover { border-color: #2ecc71; transform: translateY(-3px); }
+        .waste-btn.active { border-color: #2ecc71; background: #e8f8f5; transform: scale(1.05); box-shadow: 0 5px 15px rgba(46,204,113,0.2); }
+        
+        .input-group { display: flex; gap: 1rem; margin-bottom: 1rem; }
+        .input-group input { flex: 1; padding: 1rem; font-size: 1.2rem; border: 2px solid #eee; border-radius: 10px; }
+        .add-btn { padding: 0 2rem; background: #2ecc71; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        .add-btn:disabled { background: #ccc; cursor: not-allowed; }
 
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
+        .summary-box { background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; padding: 2rem; border-radius: 20px; }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 1rem; font-size: 1.1rem; }
+        .total-row { font-size: 1.5rem; font-weight: bold; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 1rem; margin-top: 1rem; }
+        
+        .waste-list-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: #f8f9fa; margin-bottom: 0.5rem; border-radius: 10px; border-left: 5px solid #2ecc71; }
+        .delete-btn { background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-left: 10px; }
 
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-        }
+        /* --- CONTACT FORM --- */
+        .contact-form { max-width: 600px; margin: 0 auto 5rem; padding: 0 5%; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group input, .form-group textarea { width: 100%; padding: 1rem; border: 2px solid #eee; border-radius: 10px; }
+        .submit-btn { width: 100%; padding: 1rem; background: #2ecc71; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
 
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s;
-            position: relative;
-        }
+        /* --- FOOTER --- */
+        footer { background: #1a1a1a; color: white; padding: 3rem 5%; text-align: center; margin-top: auto; }
 
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -5px;
-            left: 0;
-            background: white;
-            transition: width 0.3s;
-        }
-
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-
-        .menu-toggle {
-            display: none;
-            flex-direction: column;
-            cursor: pointer;
-        }
-
-        .menu-toggle span {
-            width: 25px;
-            height: 3px;
-            background: white;
-            margin: 3px 0;
-            transition: 0.3s;
-        }
-
-        /* Hero Section */
-        .hero {
-            height: 100vh;
-            background: linear-gradient(135deg, rgba(46, 204, 113, 0.9), rgba(39, 174, 96, 0.9)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%2327ae60" width="1200" height="600"/><circle fill="%232ecc71" opacity="0.1" cx="200" cy="100" r="150"/><circle fill="%232ecc71" opacity="0.1" cx="800" cy="400" r="200"/></svg>');
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: white;
-            position: relative;
-        }
-
-        .hero-content {
-            max-width: 800px;
-            padding: 2rem;
-            animation: fadeInUp 1s ease;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            animation: fadeInUp 1s ease 0.2s backwards;
-        }
-
-        .hero p {
-            font-size: 1.3rem;
-            margin-bottom: 2rem;
-            animation: fadeInUp 1s ease 0.4s backwards;
-        }
-
-        .cta-button {
-            padding: 1rem 3rem;
-            font-size: 1.1rem;
-            background: white;
-            color: #27ae60;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-            animation: fadeInUp 1s ease 0.6s backwards;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-
-        .cta-button:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-            background: #f8f9fa;
-        }
-
-        /* Features Section */
-        .features {
-            padding: 5rem 5%;
-            background: white;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            color: #27ae60;
-            margin-bottom: 3rem;
-            position: relative;
-        }
-
-        .section-title::after {
-            content: '';
-            width: 100px;
-            height: 4px;
-            background: linear-gradient(90deg, #2ecc71, #27ae60);
-            display: block;
-            margin: 1rem auto;
-            border-radius: 2px;
-        }
-
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-        }
-
-        .feature-card {
-            background: linear-gradient(135deg, #f8f9fa, #ffffff);
-            padding: 2rem;
-            border-radius: 20px;
-            text-align: center;
-            transition: all 0.3s;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-            opacity: 0;
-            animation: fadeIn 0.8s ease forwards;
-        }
-
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-            }
-        }
-
-        .feature-card:nth-child(1) { animation-delay: 0.1s; }
-        .feature-card:nth-child(2) { animation-delay: 0.2s; }
-        .feature-card:nth-child(3) { animation-delay: 0.3s; }
-        .feature-card:nth-child(4) { animation-delay: 0.4s; }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(46, 204, 113, 0.2);
-        }
-
-        .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            display: inline-block;
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .feature-card:hover .feature-icon {
-            animation: none;
-            transform: scale(1.2);
-        }
-
-        .feature-card h3 {
-            color: #27ae60;
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-        }
-
-        /* Statistics */
-        .stats {
-            padding: 5rem 5%;
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-            color: white;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-            text-align: center;
-        }
-
-        .stat-item {
-            opacity: 0;
-            animation: fadeInUp 0.8s ease forwards;
-        }
-
-        .stat-item:nth-child(1) { animation-delay: 0.1s; }
-        .stat-item:nth-child(2) { animation-delay: 0.2s; }
-        .stat-item:nth-child(3) { animation-delay: 0.3s; }
-        .stat-item:nth-child(4) { animation-delay: 0.4s; }
-
-        .stat-number {
-            font-size: 3rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-
-        /* Price Section */
-        .prices {
-            padding: 5rem 5%;
-            background: #f8f9fa;
-        }
-
-        .price-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .price-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 20px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-            transition: all 0.3s;
-            opacity: 0;
-            animation: fadeIn 0.8s ease forwards;
-        }
-
-        .price-card:nth-child(1) { animation-delay: 0.1s; }
-        .price-card:nth-child(2) { animation-delay: 0.2s; }
-        .price-card:nth-child(3) { animation-delay: 0.3s; }
-
-        .price-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(46, 204, 113, 0.2);
-        }
-
-        .waste-type {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .price-card h3 {
-            color: #27ae60;
-            margin-bottom: 1rem;
-        }
-
-        .price {
-            font-size: 2rem;
-            color: #2ecc71;
-            font-weight: bold;
-            margin: 1rem 0;
-        }
-
-        /* Contact Form */
-        .contact {
-            padding: 5rem 5%;
-            background: white;
-        }
-
-        .contact-form {
-            max-width: 600px;
-            margin: 0 auto;
-            animation: fadeInUp 1s ease;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #27ae60;
-            font-weight: 500;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #2ecc71;
-            box-shadow: 0 0 10px rgba(46, 204, 113, 0.2);
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 1rem;
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .submit-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(46, 204, 113, 0.3);
-        }
-
-        /* Footer */
-        footer {
-            background: #1a1a1a;
-            color: white;
-            padding: 3rem 5%;
-            text-align: center;
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .footer-section h3 {
-            color: #2ecc71;
-            margin-bottom: 1rem;
-        }
-
-        .footer-section ul {
-            list-style: none;
-        }
-
-        .footer-section ul li {
-            margin-bottom: 0.5rem;
-        }
-
-        .footer-section a {
-            color: #ddd;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .footer-section a:hover {
-            color: #2ecc71;
-        }
-
-        .copyright {
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 1px solid #333;
-            opacity: 0.7;
-        }
-
-        /* Responsive */
+        /* --- RESPONSIVE --- */
         @media (max-width: 768px) {
-            .menu-toggle {
-                display: flex;
-            }
-
-            .nav-links {
-                position: fixed;
-                right: -100%;
-                top: 70px;
-                flex-direction: column;
-                background: linear-gradient(135deg, #2ecc71, #27ae60);
-                width: 100%;
-                padding: 2rem;
-                transition: 0.3s;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            }
-
-            .nav-links.active {
-                right: 0;
-            }
-
-            .hero h1 {
-                font-size: 2rem;
-            }
-
-            .hero p {
-                font-size: 1rem;
-            }
-
-            .section-title {
-                font-size: 2rem;
-            }
-        }
-
-        /* Scroll Animation */
-        .scroll-animate {
-            opacity: 0;
-            transform: translateY(50px);
-            transition: all 0.8s ease;
-        }
-
-        .scroll-animate.active {
-            opacity: 1;
-            transform: translateY(0);
+            .nav-links { display: none; } /* Sederhana untuk mobile */
+            .weighing-grid { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 2rem; }
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
+
     <nav>
-        <div class="logo">Bank Sampah Hijau</div>
-        <div class="menu-toggle" onclick="toggleMenu()">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
+        <div class="logo" onclick="navigateTo('home')">Bank Sampah Hijau</div>
         <ul class="nav-links">
-            <li><a href="#home">Beranda</a></li>
-            <li><a href="#features">Layanan</a></li>
-            <li><a href="#stats">Statistik</a></li>
-            <li><a href="#prices">Harga</a></li>
-            <li><a href="#contact">Kontak</a></li>
+            <li><a onclick="navigateTo('home')">Beranda</a></li>
+            <li><a onclick="scrollToSection('program')">Layanan</a></li>
+            <li><a onclick="scrollToSection('harga')">Harga</a></li>
+            <li><a onclick="navigateTo('weighing')">📦 Timbang Sampah</a></li>
+            <li><a onclick="scrollToSection('contact')">Kontak</a></li>
         </ul>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="hero-content">
-            <h1>Sampahmu Bernilai!</h1>
-            <p>Tukar sampah Anda dengan uang tunai. Mari bersama menjaga lingkungan dan meningkatkan ekonomi keluarga.</p>
-            <button class="cta-button" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">
-                Mulai Sekarang
-            </button>
-        </div>
-    </section>
+    <div id="home" class="page active">
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Sampahmu Bernilai!</h1>
+                <p>Ubah sampah menjadi rupiah. Gabung sekarang untuk lingkungan yang lebih bersih.</p>
+                <button class="cta-button" onclick="navigateTo('weighing')">Mulai Menimbang</button>
+            </div>
+        </section>
 
-    <!-- Features Section -->
-    <section class="features" id="features">
-        <h2 class="section-title">Layanan Kami</h2>
-        <div class="feature-grid">
-            <div class="feature-card">
-                <div class="feature-icon">🏦</div>
-                <h3>Tabungan Sampah</h3>
-                <p>Kumpulkan sampah Anda dan tukar dengan saldo tabungan yang dapat dicairkan kapan saja.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🚚</div>
-                <h3>Jemput Gratis</h3>
-                <p>Kami akan menjemput sampah Anda langsung ke rumah tanpa biaya tambahan.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">💰</div>
-                <h3>Harga Terbaik</h3>
-                <p>Dapatkan harga kompetitif untuk setiap jenis sampah yang Anda setorkan.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">📱</div>
-                <h3>Aplikasi Mobile</h3>
-                <p>Pantau saldo, jadwalkan penjemputan, dan kelola transaksi melalui aplikasi.</p>
+        <div id="program">
+            <h2 class="section-title">Layanan Kami</h2>
+            <div class="grid-container">
+                <div class="card">
+                    <span class="icon">🏦</span>
+                    <h3>Tabungan Emas</h3>
+                    <p>Konversi saldo sampah langsung menjadi tabungan emas.</p>
+                </div>
+                <div class="card">
+                    <span class="icon">🚚</span>
+                    <h3>Jemput Gratis</h3>
+                    <p>Layanan jemput sampah gratis untuk berat di atas 10kg.</p>
+                </div>
+                <div class="card">
+                    <span class="icon">📱</span>
+                    <h3>Aplikasi Monitoring</h3>
+                    <p>Pantau riwayat transaksi Anda secara realtime.</p>
+                </div>
             </div>
         </div>
-    </section>
 
-    <!-- Statistics Section -->
-    <section class="stats" id="stats">
-        <h2 class="section-title" style="color: white;">Dampak Kami</h2>
-        <div class="stats-grid">
-            <div class="stat-item">
-                <div class="stat-number">5,230+</div>
-                <div class="stat-label">Nasabah Aktif</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">250</div>
-                <div class="stat-label">Ton Sampah Terkumpul</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">1.5M</div>
-                <div class="stat-label">Total Saldo Terdistribusi</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">89%</div>
-                <div class="stat-label">Sampah Terdaur Ulang</div>
+        <div id="harga">
+            <h2 class="section-title">Daftar Harga Sampah</h2>
+            <div class="grid-container">
+                <div class="card">
+                    <span class="icon">📄</span>
+                    <h3>Kertas</h3>
+                    <div class="price-tag">Rp 2.500/kg</div>
+                    <p>Koran, Kardus, HVS</p>
+                </div>
+                <div class="card">
+                    <span class="icon">🍾</span>
+                    <h3>Plastik</h3>
+                    <div class="price-tag">Rp 3.000/kg</div>
+                    <p>Botol PET, Gelas Plastik</p>
+                </div>
+                <div class="card">
+                    <span class="icon">🥫</span>
+                    <h3>Logam</h3>
+                    <div class="price-tag">Rp 5.000/kg</div>
+                    <p>Besi, Aluminium, Kaleng</p>
+                </div>
+                <div class="card">
+                    <span class="icon">📱</span>
+                    <h3>Elektronik</h3>
+                    <div class="price-tag">Rp 10.000/kg</div>
+                    <p>PCB, HP Rusak</p>
+                </div>
             </div>
         </div>
-    </section>
 
-    <!-- Prices Section -->
-    <section class="prices" id="prices">
-        <h2 class="section-title">Daftar Harga Sampah</h2>
-        <div class="price-grid">
-            <div class="price-card">
-                <div class="waste-type">📄</div>
-                <h3>Kertas & Kardus</h3>
-                <div class="price">Rp 2.500/kg</div>
-                <p>Koran, majalah, kardus, dan kertas bekas lainnya</p>
-            </div>
-            <div class="price-card">
-                <div class="waste-type">🍾</div>
-                <h3>Plastik</h3>
-                <div class="price">Rp 3.000/kg</div>
-                <p>Botol plastik, kemasan, dan plastik bersih lainnya</p>
-            </div>
-            <div class="price-card">
-                <div class="waste-type">🥫</div>
-                <h3>Logam & Kaleng</h3>
-                <div class="price">Rp 5.000/kg</div>
-                <p>Kaleng minuman, besi, aluminium, dan logam lainnya</p>
-            </div>
-            <div class="price-card">
-                <div class="waste-type">🍺</div>
-                <h3>Kaca</h3>
-                <div class="price">Rp 1.500/kg</div>
-                <p>Botol kaca, pecahan kaca bersih</p>
-            </div>
-            <div class="price-card">
-                <div class="waste-type">📱</div>
-                <h3>Elektronik</h3>
-                <div class="price">Rp 10.000/kg</div>
-                <p>Barang elektronik bekas dan komponen</p>
-            </div>
-            <div class="price-card">
-                <div class="waste-type">🍃</div>
-                <h3>Organik</h3>
-                <div class="price">Rp 500/kg</div>
-                <p>Sampah dapur, daun, dan organik lainnya</p>
+        <div id="contact">
+            <h2 class="section-title">Hubungi Kami</h2>
+            <form class="contact-form" onsubmit="alert('Pesan terkirim!'); return false;">
+                <div class="form-group"><input type="text" placeholder="Nama Anda" required></div>
+                <div class="form-group"><input type="email" placeholder="Email Anda" required></div>
+                <div class="form-group"><textarea rows="4" placeholder="Pesan Anda..." required></textarea></div>
+                <button type="submit" class="submit-btn">Kirim Pesan</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="weighing" class="page">
+        <div class="weighing-container">
+            <h2 class="section-title">Sistem Penimbangan Digital</h2>
+            
+            <div class="weighing-grid">
+                <div class="weighing-panel">
+                    <h3>1. Pilih Jenis Sampah</h3>
+                    <div class="waste-selector">
+                        <div class="waste-btn" onclick="selectWaste('Kertas', 2500, this)">📄<br>Kertas</div>
+                        <div class="waste-btn" onclick="selectWaste('Plastik', 3000, this)">🍾<br>Plastik</div>
+                        <div class="waste-btn" onclick="selectWaste('Logam', 5000, this)">🥫<br>Logam</div>
+                        <div class="waste-btn" onclick="selectWaste('Kaca', 1500, this)">🍺<br>Kaca</div>
+                        <div class="waste-btn" onclick="selectWaste('Elektronik', 10000, this)">📱<br>Elektronik</div>
+                        <div class="waste-btn" onclick="selectWaste('Organik', 500, this)">🍃<br>Organik</div>
+                    </div>
+
+                    <h3>2. Masukkan Berat (Kg)</h3>
+                    <div class="input-group">
+                        <input type="number" id="weightInput" placeholder="0.0" min="0.1" step="0.1" disabled>
+                        <button class="add-btn" id="addBtn" onclick="addItem()" disabled>+ TAMBAH</button>
+                    </div>
+
+                    <div id="wasteList">
+                        <p style="color:#999; text-align:center; margin-top:2rem;">Belum ada item ditambahkan.</p>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="summary-box">
+                        <h3>Ringkasan Transaksi</h3>
+                        <div style="margin: 1.5rem 0;">
+                            <div class="summary-row">
+                                <span>Total Berat</span>
+                                <span id="totalWeight">0 kg</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Jumlah Item</span>
+                                <span id="totalItems">0</span>
+                            </div>
+                            <div class="summary-row total-row">
+                                <span>Estimasi Pendapatan</span>
+                                <span id="totalPrice">Rp 0</span>
+                            </div>
+                        </div>
+                        <button class="cta-button" style="width:100%; color:#27ae60;" onclick="processTransaction()">✅ Proses Sekarang</button>
+                    </div>
+                </div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- Contact Section -->
-    <section class="contact" id="contact">
-        <h2 class="section-title">Hubungi Kami</h2>
-        <form class="contact-form" onsubmit="handleSubmit(event)">
-            <div class="form-group">
-                <label>Nama Lengkap</label>
-                <input type="text" required placeholder="Masukkan nama Anda">
-            </div>
-            <div class="form-group">
-                <label>Email</label>
-                <input type="email" required placeholder="email@example.com">
-            </div>
-            <div class="form-group">
-                <label>Nomor Telepon</label>
-                <input type="tel" required placeholder="08xxxxxxxxxx">
-            </div>
-            <div class="form-group">
-                <label>Pesan</label>
-                <textarea rows="5" required placeholder="Tulis pesan Anda..."></textarea>
-            </div>
-            <button type="submit" class="submit-btn">Kirim Pesan</button>
-        </form>
-    </section>
-
-    <!-- Footer -->
     <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>Tentang Kami</h3>
-                <p>Bank Sampah Hijau adalah solusi pengelolaan sampah yang menguntungkan dan ramah lingkungan.</p>
-            </div>
-            <div class="footer-section">
-                <h3>Link Cepat</h3>
-                <ul>
-                    <li><a href="#home">Beranda</a></li>
-                    <li><a href="#features">Layanan</a></li>
-                    <li><a href="#prices">Harga</a></li>
-                    <li><a href="#contact">Kontak</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Kontak</h3>
-                <ul>
-                    <li>📞 0812-3456-7890</li>
-                    <li>📧 info@banksampah.com</li>
-                    <li>📍 Jl. Lingkungan Hijau No. 123</li>
-                </ul>
-            </div>
-        </div>
-        <div class="copyright">
-            <p>&copy; 2024 Bank Sampah Hijau. All rights reserved.</p>
-        </div>
+        <p>&copy; 2024 Bank Sampah Hijau. Melayani Sepenuh Hati.</p>
     </footer>
 
     <script>
-        function toggleMenu() {
-            const navLinks = document.querySelector('.nav-links');
-            navLinks.classList.toggle('active');
+        // --- 1. NAVIGASI HALAMAN (SPA) ---
+        function navigateTo(pageId) {
+            // Sembunyikan semua halaman
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            // Tampilkan halaman yang dipilih
+            document.getElementById(pageId).classList.add('active');
+            // Scroll ke atas
+            window.scrollTo(0, 0);
         }
 
-        function handleSubmit(e) {
-            e.preventDefault();
-            alert('Terima kasih! Pesan Anda telah terkirim. Kami akan segera menghubungi Anda.');
-            e.target.reset();
+        // Scroll ke section tertentu di halaman Home
+        function scrollToSection(sectionId) {
+            navigateTo('home'); // Pastikan ada di home dulu
+            setTimeout(() => {
+                const element = document.getElementById(sectionId);
+                if(element) element.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
         }
 
-        // Scroll Animation
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -100px 0px'
-        };
+        // --- 2. LOGIKA PENIMBANGAN (Weighing System) ---
+        let currentSelection = null;
+        let cart = [];
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.scroll-animate').forEach(el => {
-            observer.observe(el);
-        });
-
-        // Smooth Scrolling
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                    // Close mobile menu if open
-                    document.querySelector('.nav-links').classList.remove('active');
-                }
-            });
-        });
-
-        // Counter Animation for Stats
-        function animateCounter(element, target) {
-            let current = 0;
-            const increment = target / 100;
-            const timer = setInterval(() => {
-                current += increment;
-                if (current >= target) {
-                    element.textContent = target.toLocaleString('id-ID');
-                    clearInterval(timer);
-                } else {
-                    element.textContent = Math.floor(current).toLocaleString('id-ID');
-                }
-            }, 20);
+        // Fungsi Memilih Jenis Sampah
+        function selectWaste(name, price, element) {
+            // Reset visual tombol
+            document.querySelectorAll('.waste-btn').forEach(btn => btn.classList.remove('active'));
+            // Aktifkan tombol yang dipilih
+            element.classList.add('active');
+            
+            // Simpan data sementara
+            currentSelection = { name: name, price: price };
+            
+            // Aktifkan input
+            const input = document.getElementById('weightInput');
+            const btn = document.getElementById('addBtn');
+            input.disabled = false;
+            btn.disabled = false;
+            input.focus();
+            input.placeholder = `Berat ${name} (kg)...`;
         }
 
-        // Trigger counter animation when stats section is visible
-        const statsObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    document.querySelectorAll('.stat-number').forEach(stat => {
-                        const text = stat.textContent;
-                        const number = parseInt(text.replace(/[^0-9]/g, ''));
-                        animateCounter(stat, number);
-                    });
-                    statsObserver.unobserve(entry.target);
-                }
-            });
-        });
+        // Fungsi Format Rupiah
+        function formatRupiah(number) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
+        }
 
-        const statsSection = document.querySelector('.stats');
-        if (statsSection) {
-            statsObserver.observe(statsSection);
+        // Fungsi Menambah Item ke List
+        function addItem() {
+            const weightInput = document.getElementById('weightInput');
+            const weight = parseFloat(weightInput.value);
+
+            if (!currentSelection || isNaN(weight) || weight <= 0) {
+                alert("Mohon masukkan berat yang valid!");
+                return;
+            }
+
+            const itemTotal = weight * currentSelection.price;
+
+            // Masukkan ke keranjang
+            cart.push({
+                name: currentSelection.name,
+                pricePerKg: currentSelection.price,
+                weight: weight,
+                total: itemTotal
+            });
+
+            // Reset Input
+            weightInput.value = '';
+            weightInput.focus();
+
+            updateUI();
+        }
+
+        // Fungsi Hapus Item
+        function deleteItem(index) {
+            cart.splice(index, 1);
+            updateUI();
+        }
+
+        // Fungsi Update Tampilan (List & Summary)
+        function updateUI() {
+            const listContainer = document.getElementById('wasteList');
+            const totalWeightEl = document.getElementById('totalWeight');
+            const totalItemsEl = document.getElementById('totalItems');
+            const totalPriceEl = document.getElementById('totalPrice');
+
+            // Render List
+            listContainer.innerHTML = '';
+            let grandTotalWeight = 0;
+            let grandTotalPrice = 0;
+
+            if (cart.length === 0) {
+                listContainer.innerHTML = '<p style="color:#999; text-align:center; margin-top:2rem;">Belum ada item ditambahkan.</p>';
+            } else {
+                cart.forEach((item, index) => {
+                    grandTotalWeight += item.weight;
+                    grandTotalPrice += item.total;
+
+                    const div = document.createElement('div');
+                    div.className = 'waste-list-item';
+                    div.innerHTML = `
+                        <div>
+                            <strong>${item.name}</strong> (${item.weight} kg)<br>
+                            <small>${formatRupiah(item.pricePerKg)}/kg</small>
+                        </div>
+                        <div style="display:flex; align-items:center;">
+                            <strong style="color:#27ae60; margin-right:10px;">${formatRupiah(item.total)}</strong>
+                            <button class="delete-btn" onclick="deleteItem(${index})">X</button>
+                        </div>
+                    `;
+                    listContainer.appendChild(div);
+                });
+            }
+
+            // Update Summary
+            totalWeightEl.textContent = grandTotalWeight.toFixed(1) + ' kg';
+            totalItemsEl.textContent = cart.length;
+            totalPriceEl.textContent = formatRupiah(grandTotalPrice);
+        }
+
+        // Fungsi Proses Transaksi
+        function processTransaction() {
+            if (cart.length === 0) {
+                alert("Keranjang masih kosong!");
+                return;
+            }
+            const total = document.getElementById('totalPrice').textContent;
+            alert(`Transaksi Berhasil!\n\nTotal Pendapatan: ${total}\nSaldo akan segera masuk ke akun Anda.`);
+            
+            // Reset semua
+            cart = [];
+            document.getElementById('weightInput').value = '';
+            document.getElementById('weightInput').disabled = true;
+            document.getElementById('addBtn').disabled = true;
+            document.querySelectorAll('.waste-btn').forEach(btn => btn.classList.remove('active'));
+            updateUI();
         }
     </script>
 </body>
-</html>
+                            </html>
+    
