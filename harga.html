@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harga - Bank Sampah Hijau</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <div class="logo">Bank Sampah Hijau</div>
+        <div class="menu-toggle" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Beranda</a></li>
+            <li><a href="layanan.html">Layanan</a></li>
+            <li><a href="statistik.html">Statistik</a></li>
+            <li><a href="harga.html" class="active">Harga</a></li>
+            <li><a href="kontak.html">Kontak</a></li>
+        </ul>
+    </nav>
+
+    <div class="page-container">
+        <section class="prices">
+            <h2 class="section-title">Daftar Harga Sampah</h2>
+            <div class="price-grid">
+                <div class="price-card">
+                    <div class="waste-type">📄</div>
+                    <h3>Kertas & Kardus</h3>
+                    <div class="price">Rp 2.500/kg</div>
+                    <p>Koran, majalah, kardus, dan kertas bekas lainnya</p>
+                </div>
+                <div class="price-card">
+                    <div class="waste-type">🍾</div>
+                    <h3>Plastik</h3>
+                    <div class="price">Rp 3.000/kg</div>
+                    <p>Botol plastik, kemasan, dan plastik bersih lainnya</p>
+                </div>
+                <div class="price-card">
+                    <div class="waste-type">🥫</div>
+                    <h3>Logam & Kaleng</h3>
+                    <div class="price">Rp 5.000/kg</div>
+                    <p>Kaleng minuman, besi, aluminium, dan logam lainnya</p>
+                </div>
+                <div class="price-card">
+                    <div class="waste-type">🍺</div>
+                    <h3>Kaca</h3>
+                    <div class="price">Rp 1.500/kg</div>
+                    <p>Botol kaca, pecahan kaca bersih</p>
+                </div>
+                <div class="price-card">
+                    <div class="waste-type">📱</div>
+                    <h3>Elektronik</h3>
+                    <div class="price">Rp 10.000/kg</div>
+                    <p>Barang elektronik bekas dan komponen</p>
+                </div>
+                <div class="price-card">
+                    <div class="waste-type">🍃</div>
+                    <h3>Organik</h3>
+                    <div class="price">Rp 500/kg</div>
+                    <p>Sampah dapur, daun, dan organik lainnya</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="copyright"><p>&copy; 2024 Bank Sampah Hijau.</p></div>
+    </footer>
+
+    <script>
+        function toggleMenu() { document.querySelector('.nav-links').classList.toggle('active'); }
+    </script>
+</body>
+</html>
